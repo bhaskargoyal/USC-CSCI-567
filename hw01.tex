@@ -21,19 +21,6 @@
 \usetikzlibrary{automata}
 \usepackage{enumitem}
 \usepackage{mathabx}
-
-\usepackage{graphicx}
-\usepackage{multicol}
-\usepackage{ marvosym }
-\usepackage{wasysym}
-\usepackage{tikz}
-\usetikzlibrary{patterns}
-\usepackage{fancyhdr}
-\usepackage{amssymb,latexsym,amsmath,amsthm}
-\usepackage{amsfonts,rawfonts}
-\usepackage{thmtools}
-\usepackage{systeme}
-\usepackage{mathtools}
 \usepackage{algorithmic}
 \usepackage[colorlinks = true, linkcolor = black, citecolor = black, final]{hyperref}
 \usepackage{tikz}
@@ -62,6 +49,7 @@
 \newcommand{\ds}{\displaystyle}
 
 \setlength{\parindent}{0in}
+\graphicspath{ {./images/} }
 
 \declaretheoremstyle[
 headfont=\color{blue}\normalfont\bfseries,
@@ -105,22 +93,59 @@ name=Question
 
 \begin{enumerate}[label={\color{blue}{\textbf{1.\arabic*})}}]
     \item 
-        text \\
-        text \\
-        text 
+        To calculate Test Error, we need to predict the test data points\\
+        \textbf{Point 1:} $x_1 = 0.8, x_2 = 0.8, y = 0$ \\
+        $y_{Predicted} = 0$ \\
+        (Because, $x_1 > 0.5$ and $x_2 > 0.5$). \\
+        $\therefore$ Point 1 is correctly classified. \\
+        \textbf{Point 2:} $x_1 = 0.6, x_2 = 0.4, y = 1$ \\
+        $y_{Predicted} = 1$ \\
+        (Because, $x_1 > 0.5$ and $x_2 < 0.5$). \\
+        $\therefore$ Point 2 is correctly classified. \\
+        \textbf{Test Error}
+        \begin{align*}
+            \text{Test Error} &= \frac{\text{Misclassified Test Points}}{\text{Total Test Points}} \\
+            &= \frac{0}{2} \\
+            &= 0
+        \end{align*} 
+        Hence, the Test Error = 0
+        
+    \item 
+        To calculate Test Error, we need to predict the test data points using the new Decision Tree from Figure 3 (in question). \\
+        \textbf{Point 1:} $x_1 = 0.8, x_2 = 0.8, y = 0$ \\
+        $y_{Predicted} = 1$ \\
+        (Because, $x_1 > 0.5$). \\
+        $\therefore$ Point 1 is misclassified. \\
+        \textbf{Point 2:} $x_1 = 0.6, x_2 = 0.4, y = 1$ \\
+        $y_{Predicted} = 1$ \\
+        (Because, $x_1 > 0.5$. \\
+        $\therefore$ Point 2 is correctly classified. \\
+        \textbf{Test Error}
+        \begin{align*}
+            \text{Test Error} &= \frac{\text{Misclassified Test Points}}{\text{Total Test Points}} \\
+            &= \frac{1}{2}
+        \end{align*} 
+        Hence, the Test Error = $1/2 = 0.5$
         
         
     \item 
-        text \\
-        text \\
-        text 
+        Yes, the decision tree in Figure 3 is a \textbf{linear} classifier in terms of $(x_1, x_2)$. This is because the condition on root node of decision tree is $x_1 > 0.5$ which is a linear equation in $x_1$.
+        \smallskip
         
+        No, we can't classify the given data in Table 1 and get zero classification error by drawing a depth-1 decision tree similar to Figure 3. This is because the data points are \textbf{non-linearly separable}. 
         
-    \item 
-        text \\
-        text \\
-        text 
     
+    \item
+        Yes, because the data points are \textbf{non-linearly separable}, we can get zero classification error by putting any expression of variables like $f(x_1, x_2) \geq c$ or $f(x_1, x_2) \leq c$. \\
+        This means, we can put a non-linear function equation which separate the data points into 2 distinct regions. \\
+        Any elliptical or hyperbolic equation which separate the data points into 2 distinct regions will give zero error. \\
+        Ex. Below is a ellipse equation which separate the data points. 
+        \begin{align*}
+            \frac{\left(\left(x-0.5\right)\cos\left(\frac{\pi}{4}\right)-\left(y-0.5\right)\sin\left(\frac{\pi}{4}\right)\right)^{2}}{1}+\frac{\left(\left(x-0.5\right)\sin\left(\frac{\pi}{4}\right)+\left(y-0.5\right)\cos\left(\frac{\pi}{4}\right)\right)^{2}}{\frac{1}{8}}<1
+        \end{align*}
+        \begin{center}
+            \includegraphics[scale=0.35]{Ellipse}
+        \end{center}
 \end{enumerate}
 \end{proof}
 
@@ -168,15 +193,54 @@ name=Question
 
 \begin{enumerate}[label={\color{blue}{\textbf{3.\arabic*})}}]
     \item 
-        text \\
-        text \\
-        text 
+        Two rounds of boosting \\
+        \begin{center}
+            \begin{tabular}{|l|c|c|}
+            \hline
+                                & Round 1 & Round 2 \\ \hline
+            $\text{weight}_A$              &    $1/6$     &     
+            \begin{tabular}{@{}l@{}}
+                    = $w_{\text{Round 1}}.e^-{\frac{1}{2}.\ln\frac{1-\epsilon}{\epsilon}$ \\
+                    = $w_{\text{Round 1}}.e^-{\frac{1}{2}.\ln\frac{1-(3/6)}{(3/6)}}$ \\
+                    = $w_{\text{Round 1}}.e^-{\frac{1}{2}.\ln\frac{1-(3/6)}{(3/6)}}$ \\  
+                    = $\frac{1}{2}.\ln{\frac{1 - (1/6)}{(1/6)}}$ \\ 
+                    = $\frac{1}{2}.\ln{5}$ \\ 
+                \end{tabular}
+            \\ \hline
+            $\text{weight}_B$              &    $1/6$     &         \\\hline
+            $\text{weight}_C$              &    $1/6$     &         \\\hline
+            $\text{weight}_D$              &    $1/6$     &         \\\hline
+            $\text{weight}_E$              &    $1/6$     &         \\\hline
+            $\text{weight}_F$              &    $1/6$     &         \\\hline\hline
+            Error rate of h1    &    $3/6$     &         \\\hline
+            Error rate of h2    &    $1/6$     &         \\\hline
+            Error rate of h3    &    $2/6$     &         \\\hline
+            Error rate of h4    &    $3/6$     &         \\\hline
+            Error rate of h5    &    $3/6$     &         \\\hline\hline
+            weak classifier (h) &   h2  &         \\\hline
+            classifier error ($\epsilon$) &    $1/6$     &         \\\hline
+            voting power ($\alpha$)        &    
+                \begin{tabular}{@{}l@{}}
+                    = $\frac{1}{2}.\ln{\frac{1 - \epsilon}{\epsilon}}$ \\  
+                    = $\frac{1}{2}.\ln{\frac{1 - (1/6)}{(1/6)}}$ \\ 
+                    = $\frac{1}{2}.\ln{5}$ \\ 
+                \end{tabular}
+            &         \\ \hline
+            \end{tabular}
+        \end{center}
         
         
     \item 
-        text \\
-        text \\
-        text 
+        \hfill
+        \begin{center}
+            \begin{tabular}{|l|l|l|l|}
+            \hline
+            Training Point & \multicolumn{3}{l|}{Classification by ensemble classifier}                                      \\ \hline
+            B              & Correctly classified                        & {\color[HTML]{FF0000} \textbf{Misclassified}} & Can't tell \\ \hline
+            D              & {\color[HTML]{FF0000} \textbf{Correctly classified}} & Misclassified                        & Can't tell \\ \hline
+            F              & Correctly classified                        & {\color[HTML]{FF0000} \textbf{Misclassified}} & Can't tell \\ \hline
+            \end{tabular}
+        \end{center}
         
         
     \item 
