@@ -156,28 +156,106 @@ name=Question
 % -------------------------
 \hrule
 \bigskip
-
+\pagebreak
 \begin{proof}[\color{red}{\textbf{Problem 2}: Name}]
 
 \hfill
 
 \begin{enumerate}[label={\color{blue}{\textbf{2.\arabic*})}}]
     \item 
-        text \\
-        text \\
-        text 
+        \textbf{Given}: $P(y|x,x') = P(y|x)$ for any $x'$ \\
+        \textbf{To prove}: $P(y,y'|x,x') = P(y|x)P(y'|x')$ 
+        \smallskip
         
+        \textbf{Proof:}
+        \begin{align*}
+            P(y,y'|x,x') &= P(y|y',x,x').P(y'|x',x) \tag*{(using Chain Rule)}\\
+            &= P(y|y',x,x').P(y'|x') 
+            \tag*{(using label independence)}\\
+            &= P(y|y',x).P(y'|x') 
+            \tag*{(using label independence)}\\
+            &= P(y|x,y').P(y'|x') \\
+            &= {P(y|x).P(y'|x')}  \tag*{(using label independence)} 
+        \end{align*}
+    Hence, proved.
         
     \item 
-        text \\
-        text \\
-        text 
+        \textbf{Given}: $n \to \infty,x_{\text{NN}} \text{ satisfies } ||x_{\text{NN}} - x_t|| \to 0$ \\
+        \textbf{To prove}: $P(y^* \neq y|x_{\text{NN}},x_t) \to 2P(y^* = 0|x_t)P(y^* = 1|x_t)$ 
+        \smallskip
         
+        \textbf{Proof:}
+        
+        $P(y^* \neq y|x_{\text{NN}},x_t) $
+        \begin{align*}
+            &= P(y^*=0,y=1|x_{\text{NN}},x_t) + P(y^*=1,y=0|x_{\text{NN}},x_t)
+            \\
+            &= P(y^*=0|x_{\text{NN}},x_t).P(y=1|x_{\text{NN}},x_t) + P(y^*=1|x_{\text{NN}},x_t).P(y=0|x_{\text{NN}},x_t)
+            \\
+            \tag*{(using chain rule)}\\
+            &= P(y^*=0|x_t).P(y=1|x_{\text{NN}}) + P(y^*=1|x_t).P(y=0|x_{\text{NN}})
+            \\
+            \tag*{(using label independence)}\\
+            &= P(y^*=0|x_t).(1 - P(y=0|x_{\text{NN}})) + (1 - P(y^*=0|x_t)).P(y=0|x_{\text{NN}})
+            \\
+            \tag*{(summation of probabilities equals 1)}\\
+            &\to P(y^*=0|x_t).(1 - P(y^*=0|x_t)) + (1 - P(y^*=0|x_t)).P(y^*=0|x_t)
+            \\
+            \tag*{(since $||x_{\text{NN}} - x_t|| \to 0$)}\\
+            &\to 2P(y^*=0|x_t).(1 - P(y^*=0|x_t))
+            \\
+            &\to 2P(y^*=0|x_t).P(y^*=1|x_t) \tag*{(summation of probabilities equals 1)}
+        \end{align*}
+        Hence, proved.
+        \pagebreak
         
     \item 
-        text \\
-        text \\
-        text 
+        \textbf{Given}: $P(y^* \neq y|x_{\text{NN}},x_t) \to 2P(y^*=0|x_t).P(y^*=1|x_t)$ \\
+        \textbf{To Prove}: $P(y^* \neq y|x_{\text{NN}},x_t) \leq  \min\limits_y 2P(y|x_t)) $ 
+        \smallskip
+        
+        \textbf{Proof:}
+        
+        In the given equation, $P(y^* \neq y|x_{\text{NN}},x_t) \to 2P(y^*=0|x_t).P(y^*=1|x_t)$
+        
+        We know that both the terms $P(y^*=0|x_t)$ and $P(y^*=1|x_t)$ are between [0,1]. And we also know that 
+        
+        if $0 \leq a, b \leq 1$ and $a \leq b$ then, $a.b < a$ and $a.b < b$ 
+        
+        Similarly, 
+        \begin{align*}
+            P(y^*=0|x_t).P(y^*=1|x_t) \leq \min\limits_y P(y|x_t) \tag*{(eq 1)}
+        \end{align*}
+        Using the above result,
+        \begin{align*}
+            P(y^* \neq y|x_{\text{NN}},x_t)  &\to 2P(y^*=0|x_t).P(y^*=1|x_t) \\
+            &\leq  \min\limits_y 2P(y|x_t) \tag*{(using result in eq 1)}
+        \end{align*}
+        Hence, Proved.
+        
+    \item 
+        For Bayes Optimal Classifier, $\min\limits_y P(y|x)$ denotes the Optimal risk/error. \\
+        For NN Classifier, we know that $P(y^* \neq y|x_{\text{NN}},x_t)$ denotes the error/risk. 
+        
+        Let, \\
+        $R(f_{\text{Bayes}})$ = optimal risk/error for bayes optimal classifier.\\
+        $R(f_{\text{NN}})$ = risk/error for the NN classifier.
+        
+        Then, 
+        \begin{align*}
+            R(f_{\text{Bayes}}) &= \min\limits_y P(y|x) \\
+        R(f_{\text{NN}}) &= P(y^* \neq y|x_{\text{NN}},x_t)
+        \end{align*}
+        
+        
+        
+        Using the above results in $2.3$, we know that 
+        \begin{align*}
+            P(y^* \neq y|x_{\text{NN}},x_t) &\leq  \min\limits_y 2P(y|x_t)) \\
+            R(f_{\text{NN}}) &\leq 2R(f_{\text{Bayes}})
+        \end{align*}
+        
+        $\therefore$ $\min\limits_y P(y|x)$ denotes the optimal risk/error for the bayes optimal classifier. And the risk/error involved in NN classification is atmost twice involved in the Bayes optimal classifier. 
     
 \end{enumerate}
 \end{proof}
