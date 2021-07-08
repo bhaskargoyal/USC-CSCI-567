@@ -4,7 +4,7 @@
 \newcommand{\course}{CSCI - 567}
 \newcommand{\assignmentName}{HW 01}
 \newcommand{\USCID}{6547367383}
-\newcommand{\assignmentDate}{July 3, 2021}
+\newcommand{\assignmentDate}{July 7, 2021}
 
 \addtolength{\hoffset}{-2.25cm}
 \addtolength{\textwidth}{4.5cm}
@@ -87,7 +87,7 @@ name=Question
 % Question 1
 % -------------------------
 
-\begin{proof}[\color{red}{\textbf{Problem 1}: Name}]
+\begin{proof}[\color{red}{\textbf{Problem 1}: Decision Tree}]
 
 \hfill
 
@@ -157,7 +157,7 @@ name=Question
 \hrule
 \bigskip
 \pagebreak
-\begin{proof}[\color{red}{\textbf{Problem 2}: Name}]
+\begin{proof}[\color{red}{\textbf{Problem 2}: kNN Classification}]
 
 \hfill
 
@@ -258,72 +258,158 @@ name=Question
     
 \end{enumerate}
 \end{proof}
+
+
 % -------------------------
 % Question 3
 % -------------------------
 \hrule
 \bigskip
 
-\begin{proof}[\color{red}{\textbf{Problem 3}: Name}]
+\begin{proof}[\color{red}{\textbf{Problem 3}: Boosting (Adaboosting)}]
 
 \hfill
 
 \begin{enumerate}[label={\color{blue}{\textbf{3.\arabic*})}}]
     \item 
         Two rounds of boosting \\
+        
+        \underline{\textbf{Round 1 Calculations}:}
+        
+        
+        \textit{\textbf{Initial weights}} will be all equally distributed. Hence, all 6 training sample's weights will get 1/6 value.
+        \begin{align*}
+            \text{weight}_{A, B, C, D E, F}  &= 1/6
+        \end{align*}
+        
+        \textit{\textbf{Error rate}} will the weighted average of miss classified label weights. There values will be as follows:
+        \begin{align*}
+            \text{Error of h1} &= \frac{1}{6}.3 = \frac{3}{6}\\
+            \text{Error of h2} &= \frac{1}{6}.1 = \frac{1}{6}\\
+            \text{Error of h3} &= \frac{1}{6}.2 = \frac{2}{6}\\
+            \text{Error of h4} &= \frac{1}{6}.3 = \frac{3}{6}\\
+            \text{Error of h5} &= \frac{1}{6}.3 = \frac{3}{6}\\
+        \end{align*}
+        
+        
+        \textit{\textbf{Weak Classifier:}} The least error rate is of the h2 classifier in round 1. Hence, it's respective values will be 
+        
+        \begin{align*}
+            \text{Weak Classifier (h)} &= \text{h2}\\
+            \text{Classifier Error ($\epsilon $)} &=  \frac{1}{6}  \\
+            \text{Voting power} (\alpha)  &= \frac{1}{2}.\ln{\frac{1 - \epsilon}{\epsilon}} \\  
+                    &= \frac{1}{2}.\ln{\frac{1 - (1/6)}{(1/6)}} \\ 
+                    &= \frac{1}{2}.\ln{5}  
+        \end{align*}
+        
+        \underline{\textbf{Round 2 Calculations}:}
+        
+        \textit{\textbf{Weights:}}
+        
+        The formula for calculating weights for the next round is given by
+        \begin{align*}
+        \text{weight}_{t+1}(n) = \text{weight}_t(n).e^{-\alpha_ty_nh_t(x_n)} = \begin{cases}
+   \text{weight}_t(n).e^{-\alpha_t}& \text{if }h_t(x_n)=y_n\\    
+   \text{weight}_t(n).e^{\alpha_t}& \text{otherwise}
+\end{cases}
+        \end{align*}
+        
+        Using it for calculating the new weights of round 2, 
+        \begin{align*}
+            \text{weight}_{A, B, C, E, F \text{ (Not Normalized)}}  &= w_{\text{Round 1}}.e^{-{\frac{1}{2}.\ln\frac{1-\epsilon}{\epsilon}}} \\
+                    &= \frac{1}{6}.e^{-{\frac{1}{2}.\ln\frac{1-(1/6)}{(1/6)}}} \\  
+                    &= \frac{1}{6}.e^{-{\frac{1}{2}.\ln 5}} \\  
+                    &= \frac{1}{6\sqrt{5}}
+        \end{align*}
+        \begin{align*}
+            \text{weight}_{D  \text{ (Not Normalized)}}  &= w_{\text{Round 1}}.e^{{\frac{1}{2}.\ln\frac{1-\epsilon}{\epsilon}}} \\
+                    &= \frac{1}{6}.e^{{\frac{1}{2}.\ln\frac{1-(1/6)}{(1/6)}}} \\  
+                    &= \frac{1}{6}.e^{{\frac{1}{2}.\ln 5}} \\  
+                    &= \frac{\sqrt{5}}{6}
+        \end{align*}
+        \begin{align*}
+            \text{Total Weight =}& \text{ weight}_{A} + \text{ weight}_{B} + \text{ weight}_{C} + \text{ weight}_{D} + \text{ weight}_{E} + \text{ weight}_{F}\\
+            =& 5(\frac{1}{6\sqrt{5}}) + \frac{\sqrt{5}}{6}\\
+            =& \frac{2\sqrt{5}}{6}
+        \end{align*}
+        \begin{align*}
+            \text{weight}_{A, B, C, E, F \text{ (Normalized)}}  &= \frac{w_{\text{A, B, C, E, F Not Normalized}}}{\text{Total Weight}} \\
+                    &= \frac{1}{6\sqrt{5}} / \frac{2\sqrt{5}}{6}\\
+                    &= \frac{1}{10}
+        \end{align*}
+        \begin{align*}
+            \text{weight}_{D \text{ (Normalized)}}  &= \frac{w_{\text{D, Not Normalized}}}{\text{Total Weight}} \\
+                    &= \frac{\sqrt{5}}{6} / \frac{2\sqrt{5}}{6}\\
+                    &= \frac{1}{2}
+        \end{align*}
+        
+        \textit{\textbf{Error rate}} will the weighted average of miss classified label weights. There values will be as follows:
+        \begin{align*}
+            \text{Error of h1} &= \frac{1}{10}.2 + \frac{1}{2}.1 = \frac{7}{10}\\
+            \text{Error of h2} &= \frac{1}{2}.1 = \frac{1}{2} = \frac{5}{10}\\
+            \text{Error of h3} &= \frac{1}{10}.2 = \frac{2}{10}\\
+            \text{Error of h4} &= \frac{1}{10}.3 = \frac{3}{10}\\
+            \text{Error of h5} &= \frac{1}{10}.2 + \frac{1}{2}.1 = \frac{1}{2} = \frac{7}{10}
+        \end{align*}
+        
+        \textit{\textbf{Weak Classifier:}} The least error rate is of the h3 classifier in round 2. Hence, it's respective values will be 
+        
+        \begin{align*}
+            \text{Weak Classifier (h)} &= \text{h3}\\
+            \text{Classifier Error ($\epsilon $)} &=  \frac{2}{10} = \frac{2}{10}  \\
+            \text{Voting power} (\alpha)  &= \frac{1}{2}.\ln{\frac{1 - \epsilon}{\epsilon}} \\  
+                    &= \frac{1}{2}.\ln{\frac{1 - (2/10)}{(2/10)}} \\ 
+                    &= \frac{1}{2}.\ln{4}  
+        \end{align*}
+        
+        \textit{\textbf{Table}}
+        
         \begin{center}
             \begin{tabular}{|l|c|c|}
             \hline
                                 & Round 1 & Round 2 \\ \hline
             $\text{weight}_A$              &    $1/6$     &     
-            \begin{tabular}{@{}l@{}}
-                    = $w_{\text{Round 1}}.e^-{\frac{1}{2}.\ln\frac{1-\epsilon}{\epsilon}$ \\
-                    = $w_{\text{Round 1}}.e^-{\frac{1}{2}.\ln\frac{1-(3/6)}{(3/6)}}$ \\
-                    = $w_{\text{Round 1}}.e^-{\frac{1}{2}.\ln\frac{1-(3/6)}{(3/6)}}$ \\  
-                    = $\frac{1}{2}.\ln{\frac{1 - (1/6)}{(1/6)}}$ \\ 
-                    = $\frac{1}{2}.\ln{5}$ \\ 
-                \end{tabular}
-            \\ \hline
-            $\text{weight}_B$              &    $1/6$     &         \\\hline
-            $\text{weight}_C$              &    $1/6$     &         \\\hline
-            $\text{weight}_D$              &    $1/6$     &         \\\hline
-            $\text{weight}_E$              &    $1/6$     &         \\\hline
-            $\text{weight}_F$              &    $1/6$     &         \\\hline\hline
-            Error rate of h1    &    $3/6$     &         \\\hline
-            Error rate of h2    &    $1/6$     &         \\\hline
-            Error rate of h3    &    $2/6$     &         \\\hline
-            Error rate of h4    &    $3/6$     &         \\\hline
-            Error rate of h5    &    $3/6$     &         \\\hline\hline
-            weak classifier (h) &   h2  &         \\\hline
-            classifier error ($\epsilon$) &    $1/6$     &         \\\hline
+            $1/10$              \\ \hline
+            $\text{weight}_B$              &    $1/6$     &    $1/10$       \\\hline
+            $\text{weight}_C$              &    $1/6$     &    $1/10$       \\\hline
+            $\text{weight}_D$              &    $1/6$     &    $1/2$      \\\hline
+            $\text{weight}_E$              &    $1/6$     &    $1/10$       \\\hline
+            $\text{weight}_F$              &    $1/6$     &    $1/10$       \\\hline\hline
+            Error rate of h1    &    $3/6$     &  7/10       \\\hline
+            Error rate of h2    &    $1/6$     &  5/10       \\\hline
+            Error rate of h3    &    $2/6$     &  2/10       \\\hline
+            Error rate of h4    &    $3/6$     &  3/10       \\\hline
+            Error rate of h5    &    $3/6$     &  7/10       \\\hline\hline
+            weak classifier (h) &   h2  &     h3    \\\hline
+            classifier error ($\epsilon$) &    $1/6$     &   $2/10$      \\\hline
             voting power ($\alpha$)        &    
-                \begin{tabular}{@{}l@{}}
-                    = $\frac{1}{2}.\ln{\frac{1 - \epsilon}{\epsilon}}$ \\  
-                    = $\frac{1}{2}.\ln{\frac{1 - (1/6)}{(1/6)}}$ \\ 
-                    = $\frac{1}{2}.\ln{5}$ \\ 
-                \end{tabular}
-            &         \\ \hline
+                $\frac{1}{2}.\ln{5}$ 
+            &     $\frac{1}{2}.\ln{4}$      \\ \hline
             \end{tabular}
         \end{center}
         
-        
     \item 
-        \hfill
+        For classification, the training point will be the weighted average of the voting power of the weak classifiers of each round. i.e. h2 and h3
+        \begin{align*}
+                H(x) &= \alpha_1h2 + \alpha_2h3 = \frac{1}{2}\ln5(h2) + \frac{1}{2}\ln4(h3)\\
+                \text{Training Point B: } &= \frac{1}{2}\ln5 - \frac{1}{2}\ln4 \;> 0 \;\;\; \text{(Correctly Classified)}\\
+                \text{Training Point D: } &= -\frac{1}{2}\ln5 + \frac{1}{2}\ln4 \;< 0 \;\;\; \text{(Misclassified)}\\
+                \text{Training Point F: } &= \frac{1}{2}\ln5 + \frac{1}{2}\ln4 \;> 0 \;\;\; \text{(Correctly Classified)}
+        \end{align*}
         \begin{center}
             \begin{tabular}{|l|l|l|l|}
             \hline
             Training Point & \multicolumn{3}{l|}{Classification by ensemble classifier}                                      \\ \hline
-            B              & Correctly classified                        & {\color[HTML]{FF0000} \textbf{Misclassified}} & Can't tell \\ \hline
-            D              & {\color[HTML]{FF0000} \textbf{Correctly classified}} & Misclassified                        & Can't tell \\ \hline
-            F              & Correctly classified                        & {\color[HTML]{FF0000} \textbf{Misclassified}} & Can't tell \\ \hline
+            B              & {\color[HTML]{000000} \textbf{Correctly classified}}                        & Misclassified & Can't tell \\ \hline
+            D              & Correctly classified & {\color[HTML]{000000} \textbf{Misclassified}}                        & Can't tell \\ \hline
+            F              & {\color[HTML]{000000} \textbf{Correctly classified}}                        & Misclassified & Can't tell \\ \hline
             \end{tabular}
         \end{center}
         
         
     \item 
-        text \\
-        text \\
-        text 
+        \bm{$E$} training point will have the smallest weight at the end of the 2021st round. \\
+        This is because $E$ was never misclassified by any classifier in any round. Hence, it's importance (or weight) will be the least among all the training data points.
     
 \end{enumerate}
 \end{proof}
