@@ -1,0 +1,302 @@
+\documentclass[a4paper, 12pt]{article}
+
+\newcommand{\assignmentAuthor}{Bhaskar Goyal}
+\newcommand{\course}{CSCI - 567}
+\newcommand{\assignmentName}{HW {04}}
+\newcommand{\USCID}{6547367383}
+\newcommand{\assignmentDate}{{Aug 3rd, 2021}}
+
+\addtolength{\hoffset}{-2.25cm}
+\addtolength{\textwidth}{4.5cm}
+\addtolength{\voffset}{-2.5cm}
+\addtolength{\textheight}{5cm}
+\setlength{\parskip}{0pt}
+\setlength{\parindent}{15pt}
+
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{tikz}
+\usetikzlibrary{automata}
+\usepackage{enumitem}
+\usepackage{mathabx}
+
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{ marvosym }
+\usepackage{wasysym}
+\usepackage{tikz}
+\usetikzlibrary{patterns}
+\usepackage{fancyhdr}
+\usepackage{amssymb,latexsym,amsmath,amsthm}
+\usepackage{amsfonts,rawfonts}
+\usepackage{thmtools}
+\usepackage{systeme}
+\usepackage{mathtools}
+\usepackage{algorithmic}
+\usepackage[colorlinks = true, linkcolor = black, citecolor = black, final]{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{automata}
+
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{ marvosym }
+\usepackage{wasysym}
+\usepackage{tikz}
+\usetikzlibrary{patterns}
+\usepackage{fancyhdr}
+\usepackage{amssymb,latexsym,amsmath,amsthm}
+\usepackage{amsfonts,rawfonts}
+\usepackage{thmtools}
+\usepackage{systeme}
+\usepackage{mathtools}
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\assignmentAuthor \; (USC ID - \USCID)}
+\lhead{\course \; \assignmentName}
+\rfoot{Page \thepage}
+\lfoot{\assignmentDate}
+
+\newcommand{\ds}{\displaystyle}
+
+\setlength{\parindent}{0in}
+
+\declaretheoremstyle[
+headfont=\color{blue}\normalfont\bfseries,
+notefont=\bfseries, 
+notebraces={}{},
+% bodyfont=\color{red}\normalfont\itshape,
+bodyfont=\normalfont,%\itshape,
+%headformat=\NUMBER.~\NAME\NOTE
+headformat=\NAME\NOTE
+]{colorquestion}
+
+\declaretheorem[
+numbered=no,
+style=colorquestion,
+name=Question
+]{question}
+
+\title{\course \; \assignmentName}
+\author{\textbf{\assignmentAuthor} \\ \Small{USC ID - \USCID}}
+\date{\assignmentDate}
+
+% ----------------------------
+
+% The "stuff" above here is called the preamble of the document.  It sets the margins and loads special packages.  Probably the only reason you would need to edit something above here would be to add a package to do something very specific... but probably everything you need is loaded already
+
+% -----------------------------
+
+\begin{document}
+\thispagestyle{plain}
+\maketitle
+\hrule
+\bigskip
+
+% -------------------------
+% Question 1
+% -------------------------
+
+\begin{proof}[\color{red}{\textbf{Problem 1}: Gaussian Mixture Model and EM}]
+
+\hfill
+
+\begin{enumerate}[label={\color{blue}{\textbf{1.\arabic*})}}]
+    \item 
+        Given Equation: 
+        \begin{align*}
+            \argmax_{\omega_k, \mu_k, \sum_k} \sum\limits_{n} &\sum\limits_{k} \gamma_{nk} \ln{\omega_k} + \sum\limits_{n} \sum\limits_{k} \gamma_{nk} \ln{\mathcal{N}(x_n | \mu_k, \textstyle\sum\nolimits_{k})}\\
+            &\text{s.t. } \omega_k \geq 0\\
+            &\sum\limits_{k=1}^{K}\omega_k = 1
+        \end{align*}
+        
+        To find the MLE or the optimal solution, we need to find the optimal values for $\omega_k, \mu_k, \textstyle\sum_k $\\
+        \textbf{Let's find the value of optimal $\omega_k$},\\
+        To find $\omega_k^*$ we need to solve the below equation, 
+        \begin{align*}
+            \argmax_{\omega_k} \sum\limits_{n} &\sum\limits_{k} \gamma_{nk} \ln{\omega_k} \\
+           &\text{s.t. } \omega_k \geq 0\\ &\sum\limits_{k=1}^{K}\omega_k = 1
+        \end{align*}
+        Using the Lagrangian to solve the above, we will define $\lambda$ and $\lambda_k$ as Lagrangian multipliers.\\
+        Applying the stationary condition for each $\omega_k$. We will get,
+        \begin{align*}
+            \frac{\textstyle\sum_n\gamma_{nk}}{\omega_k} + \lambda + \lambda_k = 0\\
+            \omega_k^* = -\frac{\textstyle\sum_n\gamma_{nk}}{\lambda + \lambda_k} \neq 0
+        \end{align*}
+        By applying complementary slackness, we will get, 
+        \begin{align*}
+            \lambda_k\omega_k^* = 0\\
+            \lambda_k = 0
+        \end{align*}
+        Applying feasibility, we will get, 
+        \begin{align*}
+            \sum\limits_{k=1}^{K}\omega_k^* = -\sum\limits_{k=1}^{K}\frac{\textstyle\sum_n\gamma_{nk}}{\lambda} = 1\\
+            \lambda = -\sum\limits_{k=1}^{K}\sum_n\gamma_{nk} = -\textstyle\sum_n 1 = -N
+        \end{align*}
+        Using the values of $\lambda, \lambda_k$ found above, we can rewrite $\omega_k^*$ as,
+        \begin{align*}
+            \omega_k^* &= -\frac{\textstyle\sum_n\gamma_{nk}}{\lambda + \lambda_k} \\
+            \omega_k^* &= \frac{\textstyle\sum_n\gamma_{nk}}{N}
+        \end{align*}
+        
+        To find the values of $\mu_k, \textstyle\sum_k$, we need to solve, 
+        \begin{align*}
+            &\argmax_{\mu_k, \sum_k} \sum\limits_{n}  \gamma_{nk} \ln{\mathcal{N}(x_n | \mu_k, \textstyle\sum\nolimits_{k})}\\
+            &= \argmax_{\mu_k, \sum_k} \sum\limits_{n}  \gamma_{nk} \ln{\bigg[ \frac{1}{(\sqrt{2\pi}\sigma_k)^D}\exp{\bigg( - \frac{1}{2\sigma_k^2}||x_n - \mu_k||^2 \bigg)} \bigg]}\\
+            &= \argmax_{\mu_k, \sum_k} \sum\limits_{n}  \gamma_{nk} {\bigg( -D\ln{\sigma_k}  - \frac{||x_n - \mu_k||^2}{2\sigma_k^2} \bigg)} \tag*{(where D is length of $x_n$)}\\
+        \end{align*}
+        \textbf{Let's find the value of optimal $\mu_k$}, \\
+        To find $\mu_k$, we will set the derivative with respect to $\mu_k$ to 0, we get
+        \begin{align*}
+            &\frac{1}{\sigma_k}\sum_n{\gamma_{nk}(x_n- \mu_k)} = 0\\
+            &\mu_k^* = \frac{\textstyle
+            \sum\nolimits_n{\gamma_{nk}x_n}}{\sum\nolimits_n{\gamma_{nk}}}
+        \end{align*}
+       \textbf{Let's find the value of optimal $\sigma_k$}, \\
+        To find $\sigma_k$, we will set the derivative with respect to $\sigma_k$ to 0, we get
+        \begin{align*}
+            &\sum_n{\gamma_{nk}}\bigg(-\frac{D}{\sigma_k} + \frac{||x_n - \mu_k||^2}{\sigma_k^3}\bigg) = 0\\
+            &(\sigma_k^*)^2 = \frac{\sum\nolimits_n\gamma_{nk}||x_n - \mu_k^*||^2}{D\sum\nolimits_n\gamma_{nk}}
+        \end{align*}
+        
+        $\therefore$ \textbf{The optimal values are}, 
+        \begin{align*}
+            \omega_k^* &= \frac{\textstyle\sum_n\gamma_{nk}}{N}\\
+            \mu_k^* &= \frac{\textstyle
+            \sum\nolimits_n{\gamma_{nk}x_n}}{\sum\nolimits_n{\gamma_{nk}}}\\
+            (\sigma_k^*)^2 &= \frac{\sum\nolimits_n\gamma_{nk}||x_n - \mu_k^*||^2}{D\sum\nolimits_n\gamma_{nk}}
+        \end{align*}
+    \item 
+        To reduce GMM to K-means, we need to set the parameters as below\\
+        Set weights of GMM as average or $\omega_k = \frac{1}{K}$ \\
+        Set standard deviation, $\sigma_k = \sigma \to $ 0
+        \begin{align*}
+            p(x_n, z_n = k) &= p(z_n = k) p(x_n | z_n = k)\\
+            &\propto \;\;p(x_n | z_n = k){\tag*{(ignoring constant terms)}}\\
+            &\propto \;\; \exp{\bigg(  -\frac{1}{2\sigma_k^2} || x_n - \mu_k ||^2 \bigg)}{\tag*{(Gaussian distribution)}}
+        \end{align*}
+        To calculate the posterior probability $p(z_n = k | x_n)$, we can use the conditional probability, and set $\sigma_k = \sigma \to 0$
+        \begin{align*}
+            p(z_n = k | x_n) &= \frac{p(x_n, z_n = k)}{p(x_n)}\\
+            p(z_n = k | x_n) &= \lim_{\sigma \to 0}\frac{\exp{\big( -\frac{1}{2\sigma_k^2} || x_n - \mu_k ||^2 \big)}}{\exp{\big( \sum\nolimits_j -\frac{1}{2\sigma_j^2} || x_n - \mu_j ||^2 \big)}}\\
+            p(z_n = k | x_n) &\to \begin{cases} 
+              1 & \text{if $k = \argmin_j ||x_n - \mu_j||^2$} \\
+              0 & \text{otherwise}
+           \end{cases}
+        \end{align*}
+        $\therefore$ The above expression gives a hard assignment of either 1 or 0 to a particular cluster $z_n = k$ given $x_n$. Thus, we have reduced the GMM to K-means clustering algorithm.
+\end{enumerate}
+\end{proof}
+
+
+
+% -------------------------
+% Question 2
+% -------------------------
+\hrule
+\bigskip
+
+\begin{proof}[\color{red}{\textbf{Problem 2}: Hidden Markov Model}]
+
+\hfill
+
+\begin{enumerate}[label={\color{blue}{\textbf{2.\arabic*})}}]
+    \item 
+        We know that $\alpha_s(T) = P(X_{T}=s, O_{1:T}=o_{1:T})$. \\
+        Derivation,
+        \begin{align*}
+        P(X_{T+1}=s | O_{1:T}=o_{1:T}) &=\frac{P(X_{T+1}=s , O_{1:T}=o_{1:T})}{P(O_{1:T}=o_{1:T})} \tag{Conditional Probability}\\
+        &=\frac{\sum\nolimits_{s'}P(X_{T+1}=s,X_{T}=s', O_{1:T}=o_{1:T})}{P(O_{1:T}=o_{1:T})} \tag{Marginalisation}\\
+        &=\frac{\sum\nolimits_{s'}P(X_{T+1}=s,X_{T}=s', O_{1:T}=o_{1:T})}{\sum\nolimits_{s''}P(X_T = s'', O_{1:T}=o_{1:T})} \tag{Marginalisation}\\
+        &=\frac{\sum\nolimits_{s'}P(X_{T+1}=s|X_{T}=s', O_{1:T}=o_{1:T})P(X_{T}=s', O_{1:T}=o_{1:T})}{\sum\nolimits_{s''}P(X_T = s'', O_{1:T}=o_{1:T})} \tag{Conditional Probability}\\
+        &=\frac{\sum\nolimits_{s'}P(X_{T+1}=s|X_{T}=s')P(X_{T}=s', O_{1:T}=o_{1:T})}{\sum\nolimits_{s''}P(X_T = s'', O_{1:T}=o_{1:T})} \tag{Markov Property}\\
+        &=\frac{\sum\nolimits_{s'}a_{s',s}\alpha_{s'}(T)}{\sum\nolimits_{s''}\alpha_{s''}(T)} \tag{Definition for $\alpha_s(T)$}\\
+    \end{align*}
+        
+        
+    \item 
+        To reduce HMM to GMM, we need to set the HMM model parameters in form of GMM weights and Gaussian distribution as below,
+        
+        \begin{itemize}
+         \item Initial Distribution, $P(X_1=S)$
+         \begin{align*}
+             P(X_1=S) = \omega_s
+         \end{align*}
+         \item Transition Distribution, $P(X_{t+1}=s' | X_t=s)$
+         \begin{align*}
+             P(X_{t+1}=s'|X_t=s) 
+             &=P(X_{t+1}
+             = s')\\ 
+             & = \omega_{s'}
+         \end{align*}
+         \item Emission Distribution, $P(O_{t}=o | X_t=s)$
+         \begin{align*}
+             P(O_{t}=o | X_t=s)  
+             &=\mathcal{N}(o|\mu_s,\sigma^2_{s}I)
+         \end{align*}
+     \end{itemize}
+     The above representation means that each state in HMM is a cluster in GMM.\\
+     Applying factorization on $P(X_2=s| O_1=o_1,O_2=o_2)$,
+     \begin{align*}
+         P(X_2=s| O_1=o_1,O_2=o_2) & = \sum\nolimits_{s'}P(X_1=s', X_2=s| O_1=o_1,O_2=o_2) \tag{HMM Factorisation}
+     \end{align*}
+     Also, we can write
+     \begin{align*}
+         &P(X_1=s', X_2=s| O_1=o_1,O_2=o_2)  =\frac{P(X_1=s', X_2=s, O_1=o_1,O_2=o_2)}{\sum\nolimits_{s'}\sum\nolimits_{s}P(X_1=s', X_2=s,O_1=o_1,O_2=o_2)}\\
+         &P(X_1=s', X_2=s, O_1=o_1,O_2=o_2)\\ 
+          &= P(X_1=s')P(X_2=s| X_1=s')P(O_1=o_1|X_1=s')P(O_2=o_2|X_2=s)
+     \end{align*}
+     Let's replace the derived terms with the model parameters.
+     \begin{align*}
+         P(X_1=s', X_2=s, O_1=o_1,O_2=o_2) &=\omega_{s'}\omega_{s}\mathcal{N}(o_1 | \mu_{s'},\sigma^2_{s'}I)\mathcal{N}(o_2 | \mu_{s},\sigma^2_{s}I)\\
+         &=\omega_{s'}\mathcal{N}(o_1 | \mu_{s'},\sigma^2_{s'}I)\omega_{s}\mathcal{N}(o_2 | \mu_{s},\sigma^2_{s}I)\\
+         &=P(X_1=s',O =o_1)P(X_2=s,O =o_2)
+     \end{align*}
+     Hence, HMM in this case is non-sequential/non-temporal in nature. \\
+     Rewriting, $P(X_2=s| O_1=o_1,O_2=o_2)$:
+     \begin{align*}
+         P(X_2=s| O_1=o_1,O_2=o_2) &= \frac{\sum\nolimits_{s'}\omega_{s'}\omega_{s}\mathcal{N}(o_1 | \mu_{s'},\sigma^2_{s'}I)\mathcal{N}(o_2 | \mu_{s},\sigma^2_{s}I)}{\sum\nolimits_{s'}\sum\nolimits_{s}\omega_{s'}\omega_{s}\mathcal{N}(o_1 | \mu_{s'},\sigma^2_{s'}I)\mathcal{N}(o_2 | \mu_{s},\sigma^2_{s}I)}\\
+         &= \frac{(\sum\nolimits_{s'}\omega_{s'}\mathcal{N}(o_1 | \mu_{s'},\sigma^2_{s'}I))(\omega_{s}\mathcal{N}(o_2 | \mu_{s},\sigma^2_{s}I))}{(\sum\nolimits_{s'}\omega_{s'}\mathcal{N}(o_1 | \mu_{s'},\sigma^2_{s'}I))(\sum\nolimits_{s}\omega_{s}\mathcal{N}(o_2 | \mu_{s},\sigma^2_{s}I))}\\
+         &= \frac{(\omega_{s}\mathcal{N}(o_2 | \mu_{s},\sigma^2_{s}I))}{(\sum\nolimits_{s}\omega_{s}\mathcal{N}(o_2 | \mu_{s},\sigma^2_{s}I))}
+     \end{align*}
+     Hence, we have reduced HMM to GMM. Also, we can see that the posterior probability is independent of $O_1$ and $X_1$ and it is similar to that of GMM.
+    
+\end{enumerate}
+\end{proof}
+% -------------------------
+% Question 3
+% -------------------------
+\hrule
+\bigskip
+
+\begin{proof}[\color{red}{\textbf{Problem 3}: Viterbi Algorithm}]
+\hfill
+\begin{enumerate}[label={\color{blue}{\textbf{3.\arabic*})}}]
+    \item 
+        text \\
+        text \\
+        text 
+        
+        
+    \item 
+        text \\
+        text \\
+        text 
+        
+        
+    \item 
+        text \\
+        text \\
+        text 
+    
+\end{enumerate}
+
+\end{proof}
+\hrule
+\bigskip
+
+\end{document}
