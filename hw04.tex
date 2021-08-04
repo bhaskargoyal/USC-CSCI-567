@@ -53,6 +53,8 @@
 \usepackage{mathtools}
 \DeclareMathOperator*{\argmax}{argmax}
 \DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\max}{max}
+\DeclareMathOperator*{\min}{min}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -182,7 +184,7 @@ name=Question
         To calculate the posterior probability $p(z_n = k | x_n)$, we can use the conditional probability, and set $\sigma_k = \sigma \to 0$
         \begin{align*}
             p(z_n = k | x_n) &= \frac{p(x_n, z_n = k)}{p(x_n)}\\
-            p(z_n = k | x_n) &= \lim_{\sigma \to 0}\frac{\exp{\big( -\frac{1}{2\sigma_k^2} || x_n - \mu_k ||^2 \big)}}{\exp{\big( \sum\nolimits_j -\frac{1}{2\sigma_j^2} || x_n - \mu_j ||^2 \big)}}\\
+            p(z_n = k | x_n) &= \lim_{\sigma \to 0}\frac{\exp{\big( -\frac{1}{2\sigma_k^2} || x_n - \mu_k ||^2 \big)}}{\sum\nolimits_j\exp{\big(  -\frac{1}{2\sigma_j^2} || x_n - \mu_j ||^2 \big)}}\\
             p(z_n = k | x_n) &\to \begin{cases} 
               1 & \text{if $k = \argmin_j ||x_n - \mu_j||^2$} \\
               0 & \text{otherwise}
@@ -277,22 +279,142 @@ name=Question
 \hfill
 \begin{enumerate}[label={\color{blue}{\textbf{3.\arabic*})}}]
     \item 
-        text \\
-        text \\
-        text 
+        To calculate $P(O_{1:4}=o_{1:4};\theta)$, we need to compute $\sum_s\alpha_s(T)$. 
+        \begin{align*}
+            \alpha_1(1) &= \pi_1.b_{1A} = 0.6 * 0.4 = 0.24 \\
+            \alpha_2(1) &= \pi_2.b_{2A} = 0.4 * 0.2 = 0.08\\
+            \alpha_1(2) &= \sum_s\alpha_s(1).a_{s1}.b_{1G}\\
+            &= \alpha_1(1).a_{11}.b_{1G} + \alpha_2(1).a_{21}.b_{1G}\\
+            &= 0.24*0.7*0.4 + 0.08*0.2*0.4\\
+            &= 0.0736\\
+            \alpha_2(2) &= \sum_s\alpha_s(1).a_{s2}.b_{2G}\\
+            &= \alpha_1(1).a_{12}.b_{2G} + \alpha_2(1).a_{22}.b_{2G}\\
+            &= 0.24*0.3*0.2 + 0.08*0.8*0.2\\
+            &= 0.0272\\
+            \alpha_1(3) &= \sum_s\alpha_s(2).a_{s1}.b_{1C}\\
+            &= \alpha_1(2).a_{11}.b_{1C} + \alpha_2(2).a_{21}.b_{1C}\\
+            &= 0.0736*0.7*0.1 + 0.0272*0.2*0.1\\
+            &= 0.005696\\
+            \alpha_2(3) &= \sum_s\alpha_s(2).a_{s2}.b_{2C}\\
+            &= \alpha_1(2).a_{12}.b_{2C} + \alpha_2(2).a_{22}.b_{2C}\\
+            &= 0.0736*0.3*0.3 + 0.0272*0.8*0.3\\
+            &= 0.013152\\
+            \alpha_1(4) &= \sum_s\alpha_s(3).a_{s1}.b_{1T}\\
+            &= \alpha_1(3).a_{11}.b_{1T} + \alpha_2(3).a_{21}.b_{1T}\\
+            &= 0.005696*0.7*0.1 + 0.013152*0.2*0.1\\
+            &= 0.00066176\\
+            \alpha_2(4) &= \sum_s\alpha_s(3).a_{s2}.b_{2T}\\
+            &= \alpha_1(3).a_{12}.b_{2T} + \alpha_2(3).a_{22}.b_{2T}\\
+            &= 0.005696*0.3*0.3 + 0.013152*0.8*0.3\\
+            &= 0.00366912\\
+        \end{align*}
+        There, the final value of $P(O_{1:4}=o_{1:4};\theta)$ is,
+        \begin{align*}
+            P(O_{1:4}=o_{1:4};\theta) &= \sum_s\alpha_s(T) \\
+            &= \sum_s\alpha_s(4) \\
+            &= \alpha_1(4) + \alpha_2(4) \\
+            &= 0.00066176 + 0.00366912\\
+            &= \bm{0.00433088}
+        \end{align*}
         
         
     \item 
-        text \\
-        text \\
-        text 
+        To calculate $s^*_{1:4} = [s^*_{1},s^*_{2},s^*_{3},s^*_{4}]$, we will use Viterbi Algorithm.
         
+        \begin{align*}
+            \delta_{1}(1) &= \pi_1.b_{1A} = 0.6*0.4 = 0.24\\
+            \delta_{2}(1) &= \pi_2.b_{2A} = 0.4*0.2 = 0.08\\
+            \delta_{1}(2) &= b_{1G}\max\limits_sa_{s1}\delta_{s}(1)\\
+            &= b_{1G}\max\limits_s \{ a_{11}\delta_{1}(1), a_{21}\delta_{2}(1) \}\\
+            &= 0.4*\max\limits_s \{ 0.7*0.24, 0.2*0.08 \}\\
+            &= 0.0672\\
+            \Delta_{1}(2) &= \argmax\limits_sa_{s1}\delta_{s}(1)\\
+            \Delta_{1}(2) &= 1\\
+            \delta_{2}(2) &= b_{2G}\max\limits_sa_{s2}\delta_{s}(1)\\
+            &= b_{2G}\max\limits_s \{ a_{12}\delta_{1}(1), a_{22}\delta_{2}(1) \}\\
+            &= 0.2*\max\limits_s \{ 0.3*0.24, 0.8*0.08 \}\\
+            &= 0.0144\\
+            \Delta_{2}(2) &= \argmax\limits_sa_{s2}\delta_{s}(1)\\
+            \Delta_{2}(2) &= 1\\
+            \delta_{1}(3) &= b_{1C}\max\limits_sa_{s1}\delta_{s}(2)\\
+            &= b_{1C}\max\limits_s \{ a_{11}\delta_{1}(2), a_{21}\delta_{2}(2) \}\\
+            &= 0.1*\max\limits_s \{ 0.7*0.0672, 0.2*0.0144 \}\\
+            &= 0.004704\\
+            \Delta_{1}(3) &= \argmax\limits_sa_{s1}\delta_{s}(2)\\
+            \Delta_{1}(3) &= 1\\
+            \delta_{2}(3) &= b_{2C}\max\limits_sa_{s2}\delta_{s}(2)\\
+            &= b_{2C}\max\limits_s \{ a_{12}\delta_{1}(2), a_{22}\delta_{2}(2) \}\\
+            &= 0.3*\max\limits_s \{ 0.3*0.0672, 0.8*0.0144 \}\\
+            &= 0.006048\\
+            \Delta_{2}(3) &= \argmax\limits_sa_{s2}\delta_{s}(2)\\
+            \Delta_{2}(3) &= 1\\
+        \end{align*}
+        \begin{align*}
+            \delta_{1}(4) &= b_{1T}\max\limits_sa_{s1}\delta_{s}(3)\\
+            &= b_{1T}\max\limits_s \{ a_{11}\delta_{1}(3), a_{21}\delta_{2}(3) \}\\
+            &= 0.1*\max\limits_s \{ 0.7*0.004704, 0.2*0.006048 \}\\
+            &= 0.00032928\\
+            \Delta_{1}(4) &= \argmax\limits_sa_{s1}\delta_{s}(3)\\
+            \Delta_{1}(4) &= 1\\
+            \delta_{2}(4) &= b_{2T}\max\limits_sa_{s2}\delta_{s}(3)\\
+            &= b_{2T}\max\limits_s \{ a_{12}\delta_{1}(3), a_{22}\delta_{2}(3) \}\\
+            &= 0.3*\max\limits_s \{ 0.3*0.004704, 0.8*0.006048 \}\\
+            &= 0.00145152\\
+            \Delta_{2}(4) &= \argmax\limits_sa_{s2}\delta_{s}(3)\\
+            \Delta_{2}(4) &= 2
+        \end{align*}
+        
+        Hence, as $\delta_{2}(4)$ is larger than $\delta_{2}(4)$. We will start with $\Delta_{2}(4) = 2$. Then backtracking from there, we will decode the states as [1, 1, 2, 2]. \\
+        $\therefore$ The final hidden states decoded from Viterbi algorithm is \textbf{[1, 1, 2, 2]}.
         
     \item 
-        text \\
-        text \\
-        text 
-    
+        To find the most likely $O_5$, first we will calculate,
+        \begin{align*}
+            P(O_5=o_5 | O_{1:4}=o_{1:4}) &= \frac{P(O_5=o_5, O_{1:4}=o_{1:4})}{P(O_{1:4}=o_{1:4})}\\
+            &= \frac{P(O_{1:5}=o_{1:5})}{P(O_{1:4}=o_{1:4})}\\
+            &=\frac{\sum\nolimits_sP(O_{1:5}=o_{1:5}, X_5 = s)}{P(O_{1:4}=o_{1:4})}{\tag*{(Marginalization)}}\\
+            &=\frac{\sum\nolimits_s\alpha_s(5)}{P(O_{1:4}=o_{1:4})}\\
+            &=\frac{\alpha_1(5) + \alpha_2(5)}{P(O_{1:4}=o_{1:4})}\\
+            &=\frac{(\sum\nolimits_s\alpha_s(4).a_{s1}.b_{1O_5}) + (\sum\nolimits_s\alpha_s(4).a_{s2}.b_{2O_5})}{P(O_{1:4}=o_{1:4})}\\
+            &=\frac{(\alpha_1(4).a_{11}.b_{1O_5} + \alpha_2(4).a_{21}.b_{1O_5}) + (\alpha_1(4).a_{12}.b_{2O_5} + \alpha_2(4).a_{22}.b_{2O_5})}{P(O_{1:4}=o_{1:4})}\\
+        \end{align*}
+        Now, taking the argmax over $o_5$.
+    \begin{align*}
+        &\argmax_{o_5 \in \{A, G, C, T\}}P(O_5=o_5 | O_{1:4} = o_{1:4})\\
+            &= \argmax\{(\alpha_1(4).a_{11}.b_{1O_5} + \alpha_2(4).a_{21}.b_{1O_5}) + (\alpha_1(4).a_{12}.b_{2O_5} + \alpha_2(4).a_{22}.b_{2O_5})\}\\
+    \end{align*}
+    Calculating for each A, G, C, T,
+    \begin{align*}
+        &P(O_5=A | O_{1:4}=o_{1:4})\\
+        &\propto (\alpha_1(4).a_{11}.b_{1A} + \alpha_2(4).a_{21}.b_{1A}) + (\alpha_1(4).a_{12}.b_{2A} + \alpha_2(4).a_{22}.b_{2A})\\
+        &= 0.00066176*0.7*0.4 + 0.00366912*0.2*0.4 + 0.00066176*0.3*0.2 + 0.00366912*0.8*0.2\\
+        &= 0.0011055872
+    \end{align*}
+    \begin{align*}
+        &P(O_5=G | O_{1:4}=o_{1:4})\\
+        &\propto (\alpha_1(4).a_{11}.b_{1G} + \alpha_2(4).a_{21}.b_{1G}) + (\alpha_1(4).a_{12}.b_{2G} + \alpha_2(4).a_{22}.b_{2G})\\
+        &= 0.00066176*0.7*0.4 + 0.00366912*0.2*0.4 + 0.00066176*0.3*0.2 + 0.00366912*0.8*0.2\\
+        &= 0.0011055872
+    \end{align*}
+    \begin{align*}
+        &P(O_5=C | O_{1:4}=o_{1:4})\\
+        &\propto (\alpha_1(4).a_{11}.b_{1C} + \alpha_2(4).a_{21}.b_{1C}) + (\alpha_1(4).a_{12}.b_{2C} + \alpha_2(4).a_{22}.b_{2C})\\
+        &= 0.00066176*0.7*0.1 + 0.00366912*0.2*0.1 + 0.00066176*0.3*0.3 + 0.00366912*0.8*0.3\\
+        &= 0.0010598528
+    \end{align*}
+    \begin{align*}
+        &P(O_5=T | O_{1:4}=o_{1:4})\\
+        &\propto (\alpha_1(4).a_{11}.b_{1T} + \alpha_2(4).a_{21}.b_{1T}) + (\alpha_1(4).a_{12}.b_{2T} + \alpha_2(4).a_{22}.b_{2T})\\
+        &= 0.00066176*0.7*0.1 + 0.00366912*0.2*0.1 + 0.00066176*0.3*0.3 + 0.00366912*0.8*0.3\\
+        &= 0.0010598528
+    \end{align*}
+    Now to get the most likely $O_5$, taking argmax over $O_5$ of the above expression.
+    \begin{align*}
+            &\argmax_{o_5 \in \{A, G, C, T\}}P(O_5=o_5 | o_{1:4})\\
+            &\argmax\{P(O_5=A | o_{1:4}), P(O_5=G | o_{1:4}), P(O_5=C | o_{1:4}), P(O_5=T | o_{1:4})\}\\
+            &= A \text{ or } G \tag*{(Using the above values)}
+    \end{align*}
+    $\therefore$ Any of the \textbf{A or G} is the most likely next prediction.
 \end{enumerate}
 
 \end{proof}
